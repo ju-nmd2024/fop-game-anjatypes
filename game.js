@@ -9,6 +9,7 @@ let h = 50;
 let d = 5;
 
 function submarine(x, y) {
+  scale(0.8);
   // periscope
   noStroke();
   fill(214, 57, 17);
@@ -72,6 +73,47 @@ function submarine(x, y) {
   line(x + 50, y + 8, x + 70, y - 18);
 }
 
+function environment() {
+  background(181, 229, 245);
+
+  push();
+  noStroke();
+  fill(209, 163, 88);
+  beginShape();
+  vertex(360, 600);
+  bezierVertex(360, 585, 550, 485, 800, 600);
+  endShape();
+
+  fill(245, 197, 120);
+  beginShape();
+  vertex(0, 600);
+  bezierVertex(0, 580, 350, 480, 700, 600);
+  endShape();
+
+  // algae
+  fill(110, 148, 93);
+  ellipse(120, 500, 10, 150);
+  ellipse(710, 500, 10, 150);
+  ellipse(80, 490, 10, 200);
+
+  fill(147, 191, 128);
+  ellipse(150, 510, 10, 150);
+  ellipse(135, 535, 10, 150);
+  ellipse(650, 515, 10, 100);
+  ellipse(615, 500, 10, 150);
+
+  fill(250, 157, 190);
+  arc(225, 555, 80, 80, PI, 0, CHORD);
+  fill(173, 101, 126);
+  circle(195, 545, d * 2);
+  circle(215, 540, d * 3);
+  circle(235, 545, d * 2);
+  circle(238, 530, d * 3);
+  circle(253, 543, d + 6);
+  circle(215, 525, d + 3);
+  pop();
+}
+
 let gameTitle1 = "Ocean Floor";
 let gameTitle2 = "Oddessey";
 let instruction = "Click here to begin!";
@@ -126,55 +168,38 @@ function startScreen() {
   submarine(0, 0);
 }
 
+let isLanding = false;
+let targetX = 400;
+let targetY = 500;
+let speed = 3;
+
 function gameScreen() {
-  background(181, 229, 245);
+  environment();
+  /*
+  line 186 - 188 is code adapted from 
+  https://chatgpt.com/share/6734e54c-0514-8007-9514-279d5e18582f
+  */
+  submarine(x + 200, y - 300);
+  if (x - targetX < 10 && y - targetY < 10 && !isLanding) {
+    isLanding = true;
+  }
+  if (keyIsDown(32)) {
+    y = y - 1;
+  } else {
+    y = y + speed;
+  }
+  if (y > 920) {
+    y = 920;
+  }
+}
 
-  push();
-  noStroke();
-  fill(209, 163, 88);
-  beginShape();
-  vertex(360, 600);
-  bezierVertex(360, 585, 550, 485, 800, 600);
-  endShape();
-
-  fill(245, 197, 120);
-  beginShape();
-  vertex(0, 600);
-  bezierVertex(0, 580, 350, 480, 700, 600);
-  endShape();
-
-  // algae
-  fill(110, 148, 93);
-  ellipse(120, 500, 10, 150);
-  ellipse(710, 500, 10, 150);
-  ellipse(80, 490, 10, 200);
-
-  fill(147, 191, 128);
-  ellipse(150, 510, 10, 150);
-  ellipse(135, 535, 10, 150);
-  ellipse(650, 515, 10, 100);
-  ellipse(615, 500, 10, 150);
-
-  fill(250, 157, 190);
-  arc(225, 555, 80, 80, PI, 0, CHORD);
-  fill(173, 101, 126);
-  circle(195, 545, d * 2);
-  circle(215, 540, d * 3);
-  circle(235, 545, d * 2);
-  circle(238, 530, d * 3);
-  circle(253, 543, d + 6);
-  circle(215, 525, d + 3);
-  pop();
-
-  push();
-  scale(0.7);
-  submarine(x + 250, y - 20);
-  y = y + 4;
-
-  pop();
+function winScreen() {
+  environment();
 }
 
 function draw() {
   // startScreen();
   gameScreen();
+
+  // winScreen();
 }
