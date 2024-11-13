@@ -9,6 +9,7 @@ let h = 50;
 let d = 5;
 
 function submarine(x, y) {
+  push();
   scale(0.8);
   // periscope
   noStroke();
@@ -71,6 +72,7 @@ function submarine(x, y) {
   line(x - 100, y + 8, x - 80, y - 18);
   line(x - 25, y + 8, x - 5, y - 18);
   line(x + 50, y + 8, x + 70, y - 18);
+  pop();
 }
 
 function environment() {
@@ -122,84 +124,113 @@ function startScreen() {
   background(114, 187, 212);
   noStroke();
   fill(181, 229, 245);
-  rect(x - 320, y - 260, w + 640, h + 490);
+  rect(30, 30, 740, 540);
 
   // title graphics
   fill(252, 234, 177);
-  rect(x - 215, y - 185, w + 430, h + 65, d * 18);
-  rect(x - 180, y - 100, w + 355, h + 60, d * 18);
+  rect(135, 105, 530, 115, 90);
+  rect(170, 190, 455, 110, 90);
 
   fill(255, 227, 140);
-  rect(x - 200, y - 180, w + 415, h + 60, d * 18);
-  rect(x - 170, y - 95, w + 350, h + 60, d * 18);
+  rect(150, 110, 515, 110, 90);
+  rect(180, 195, 450, 110, 90);
 
   // title text
   stroke(252, 234, 177);
   strokeWeight(8);
   fill(255, 192, 0);
   textSize(85);
-  text(gameTitle1, x - 180, y - 100);
-  text(gameTitle2, x - 140, y - 15);
+  text(gameTitle1, 170, 190);
+  text(gameTitle2, 210, 275);
 
   // start button
   push();
   stroke(214, 113, 88);
   strokeWeight(5);
   fill(214, 57, 17);
-  rect(x - 200, y + 150, w + 30, h, d);
+  rect(150, 440, 130, 50, 5);
 
   stroke(82, 62, 2);
   strokeWeight(3);
   fill(255, 192, 0);
   textFont("Times New Roman");
   textSize(32);
-  text("START", x - 183, y + 185);
+  text("START", 167, 475);
   pop();
 
   noStroke();
   fill(24, 144, 184);
   textSize(28);
-  text(instruction, x - 250, y + 120);
+  text(instruction, 100, 410);
 
   // submarine
+  push();
   scale(0.8);
   rotate(0.2);
-  translate(x + 460, y + 50);
+  translate(810, 340);
   submarine(0, 0);
+  pop();
 }
 
-let isLanding = false;
-let targetX = 400;
-let targetY = 500;
-let speed = 3;
+let submarineLanding = false;
+let velocityY = 0;
+let gravity = 0.05;
+let groundY = 920;
 
 function gameScreen() {
   environment();
-  /*
-  line 186 - 188 is code adapted from 
-  https://chatgpt.com/share/6734e54c-0514-8007-9514-279d5e18582f
-  */
   submarine(x + 200, y - 300);
-  if (x - targetX < 10 && y - targetY < 10 && !isLanding) {
-    isLanding = true;
-  }
-  if (keyIsDown(32)) {
-    y = y - 1;
-  } else {
-    y = y + speed;
-  }
-  if (y > 920) {
-    y = 920;
-  }
 }
 
 function winScreen() {
   environment();
+  stroke(8, 69, 112);
+  strokeWeight(8);
+  fill(250, 150, 20);
+  textSize(80);
+  text("YOU WON!", 200, 300);
+
+  noStroke();
+  fill(8, 69, 112);
+  textSize(20);
+  text("click anywhere to play again", 280, 350);
+}
+
+function failScreen() {
+  environment();
+  stroke(8, 69, 112);
+  strokeWeight(8);
+  fill(250, 150, 20);
+  textSize(80);
+  text("YOU SANK!", 200, 300);
+
+  noStroke();
+  fill(8, 69, 112);
+  textSize(20);
+  text("click anywhere to play again", 280, 350);
 }
 
 function draw() {
-  // startScreen();
   gameScreen();
+  if (submarineLanding === true) {
+    velocityY = velocityY + gravity;
+  }
 
-  // winScreen();
+  if (keyIsDown(32)) {
+    y = y - 1;
+  } else {
+    y = y + velocityY;
+  }
+  if (y > groundY) {
+    y = groundY;
+  }
+  if (submarineLanding === false) {
+    velocityY = velocityY + gravity;
+  }
+  if (y >= groundY) {
+    if (velocityY > 2) {
+      submarineLanding = true;
+      failScreen();
+    }
+  }
 }
