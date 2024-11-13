@@ -126,6 +126,55 @@ function startScreen() {
   submarine(0, 0);
 }
 
+function gameScreen() {
+  background(181, 229, 245);
+
+  push();
+  noStroke();
+  fill(209, 163, 88);
+  beginShape();
+  vertex(360, 600);
+  bezierVertex(360, 585, 550, 485, 800, 600);
+  endShape();
+
+  fill(245, 197, 120);
+  beginShape();
+  vertex(0, 600);
+  bezierVertex(0, 580, 350, 480, 700, 600);
+  endShape();
+
+  // algae
+  fill(110, 148, 93);
+  ellipse(120, 500, 10, 150);
+  ellipse(710, 500, 10, 150);
+  ellipse(80, 490, 10, 200);
+
+  fill(147, 191, 128);
+  ellipse(150, 510, 10, 150);
+  ellipse(135, 535, 10, 150);
+  ellipse(650, 515, 10, 100);
+  ellipse(615, 500, 10, 150);
+
+  fill(250, 157, 190);
+  arc(225, 555, 80, 80, PI, 0, CHORD);
+  fill(173, 101, 126);
+  circle(195, 545, d * 2);
+  circle(215, 540, d * 3);
+  circle(235, 545, d * 2);
+  circle(238, 530, d * 3);
+  circle(253, 543, d + 6);
+  circle(215, 525, d + 3);
+  pop();
+
+  push();
+  scale(0.7);
+  submarine(x + 250, y - 20);
+  y = y + 4;
+
+  pop();
+}
+
 function draw() {
-  startScreen();
+  // startScreen();
+  gameScreen();
 }
