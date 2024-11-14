@@ -2,11 +2,26 @@ function setup() {
   createCanvas(800, 600);
 }
 
+// CHARACTER VARIABLES
 let x = 350;
 let y = 290;
 let w = 100;
 let h = 50;
 let d = 5;
+
+// GAME VARIABLES
+let submarineLanding = false;
+let gameState = "start";
+let velocityY = 0;
+let gravity = 0.05;
+let groundY = 920;
+
+// TITLE GRAPHICS
+let gameTitle1 = "Ocean Floor";
+let gameTitle2 = "Oddessey";
+let instruction = "click anywhere to begin!";
+let instruction2 = "Use the spacebar to control the submarine's thrust,";
+let instruction3 = "but don't land too hard or you will CRASH!";
 
 function submarine(x, y) {
   push();
@@ -116,10 +131,6 @@ function environment() {
   pop();
 }
 
-let gameTitle1 = "Ocean Floor";
-let gameTitle2 = "Oddessey";
-let instruction = "Click here to begin!";
-
 function startScreen() {
   background(114, 187, 212);
   noStroke();
@@ -143,25 +154,16 @@ function startScreen() {
   text(gameTitle1, 170, 190);
   text(gameTitle2, 210, 275);
 
-  // start button
-  push();
-  stroke(214, 113, 88);
-  strokeWeight(5);
-  fill(214, 57, 17);
-  rect(150, 440, 130, 50, 5);
-
-  stroke(82, 62, 2);
-  strokeWeight(3);
-  fill(255, 192, 0);
-  textFont("Times New Roman");
-  textSize(32);
-  text("START", 167, 475);
-  pop();
-
+  // instructions
   noStroke();
   fill(24, 144, 184);
   textSize(28);
-  text(instruction, 100, 410);
+  text(instruction, 250, 520);
+
+  textSize(18);
+  fill(24, 144, 184);
+  text(instruction2, 60, 355);
+  text(instruction3, 65, 380);
 
   // submarine
   push();
@@ -171,11 +173,6 @@ function startScreen() {
   submarine(0, 0);
   pop();
 }
-
-let submarineLanding = false;
-let velocityY = 0;
-let gravity = 0.05;
-let groundY = 920;
 
 function gameScreen() {
   environment();
@@ -211,26 +208,60 @@ function failScreen() {
 }
 
 function draw() {
-  gameScreen();
-  if (submarineLanding === true) {
+  clear();
+
+  if (gameState === "start") {
+    startScreen();
+  } else if (gameState === "play") {
+    gameScreen();
+    verticalSubmarine();
+  } else if (gameState === "win") {
+    winScreen();
+  } else if (gameState === "fail") {
+    failScreen();
+  }
+}
+
+function verticalSubmarine() {
+  // velocity and gravity effect
+  if (!submarineLanding) {
     velocityY = velocityY + gravity;
   }
 
-  if (keyIsDown(32)) {
-    y = y - 1;
-  } else {
-    y = y + velocityY;
+  // spacebar controls thrust
+  if (keyIsDown(32) && !submarineLanding) {
+    velocityY = velocityY - 0.15;
   }
-  if (y > groundY) {
+
+  // submarine position
+  y = y + velocityY;
+
+  // check landing conditions for submarine
+  if (y > groundY && !submarineLanding) {
     y = groundY;
-  }
-  if (submarineLanding === false) {
-    velocityY = velocityY + gravity;
-  }
-  if (y >= groundY) {
-    if (velocityY > 2) {
-      submarineLanding = true;
-      failScreen();
+    submarineLanding = true;
+
+    // check for landing or crash
+    if (velocityY <= 2) {
+      gameState = "win";
+    } else {
+      gameState = "fail";
     }
   }
+}
+
+function mousePressed() {
+  if (gameState === "start") {
+    gameState = "play"; // start game
+  } else if (gameState === "win" || gameState === "fail") {
+    resetGame(); // reset game
+  }
+}
+
+function resetGame() {
+  x = 350;
+  y = 290;
+  velocityY = 0;
+  submarineLanding = false;
+  gameState = "start";
 }
