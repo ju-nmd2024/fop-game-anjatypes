@@ -90,6 +90,57 @@ function submarine(x, y) {
   pop();
 }
 
+function brokenSubmarine(x, y) {
+  push();
+  scale(0.8);
+
+  // periscope
+  noStroke();
+  fill(214, 57, 17);
+  rect(365, 110, w / 5, h + 20, d * 8);
+  rect(365, 110, w - 60, h - 30, d);
+  fill(242, 132, 104);
+  rect(392, 110, w - 95, h - 30);
+
+  // vent
+  fill(222, 185, 67);
+  rect(325, 165, w - 10, h + 40, d * 4);
+
+  // wings
+  fill(245, 217, 127);
+  stroke(245, 217, 127);
+  strokeWeight(15);
+  strokeJoin(ROUND);
+  triangle(440, 225, 475, 205, 470, 250);
+  triangle(440, 355, 475, 375, 470, 330);
+
+  // propellers
+  noStroke();
+  fill(214, 57, 17);
+  rect(490, 280, w - 70, h - 30);
+
+  // top blade
+  push();
+  translate(520, 265);
+  rotate(0.2);
+  ellipse(0, 0, w / 5, h);
+  fill(242, 132, 104);
+  ellipse(0, 0, w - 95, h - 15);
+  pop();
+
+  // body
+  fill(250, 209, 75);
+  ellipse(350, 290, w * 3, h + 130);
+
+  // windows
+  stroke(204, 164, 29);
+  strokeWeight(6);
+  fill(104, 109, 110);
+  circle(260, 285, d * 11);
+  circle(335, 285, d * 11);
+  circle(410, 285, d * 11);
+}
+
 function environment() {
   background(181, 229, 245);
 
@@ -129,6 +180,26 @@ function environment() {
   circle(253, 543, d + 6);
   circle(215, 525, d + 3);
   pop();
+
+  // fish
+  noStroke();
+  fill(129, 126, 140);
+  ellipse(160, 270, 70, 15);
+  triangle(185, 270, 200, 260, 200, 280);
+  ellipse(180, 290, 45, 10);
+  triangle(195, 290, 210, 285, 210, 295);
+  ellipse(670, 200, 80, 20);
+  triangle(690, 200, 720, 190, 720, 210);
+
+  // bubbles
+  fill(219, 246, 255);
+  circle(80, 80, 25);
+  circle(110, 80, 20);
+  circle(95, 105, 10);
+  circle(660, 325, 20);
+  circle(675, 345, 15);
+  circle(260, 515, 15);
+  circle(275, 505, 10);
 }
 
 function startScreen() {
@@ -190,7 +261,9 @@ function winScreen() {
   noStroke();
   fill(8, 69, 112);
   textSize(20);
-  text("click anywhere to play again", 280, 350);
+  text("click anywhere to play again", 290, 340);
+
+  submarine(550, 635);
 }
 
 function failScreen() {
@@ -204,22 +277,13 @@ function failScreen() {
   noStroke();
   fill(8, 69, 112);
   textSize(20);
-  text("click anywhere to play again", 280, 350);
-}
+  text("click anywhere to play again", 300, 340);
 
-function draw() {
-  clear();
-
-  if (gameState === "start") {
-    startScreen();
-  } else if (gameState === "play") {
-    gameScreen();
-    verticalSubmarine();
-  } else if (gameState === "win") {
-    winScreen();
-  } else if (gameState === "fail") {
-    failScreen();
-  }
+  push();
+  rotate(-0.2);
+  translate(100, 365);
+  brokenSubmarine(0, 0);
+  pop();
 }
 
 function verticalSubmarine() {
@@ -229,6 +293,7 @@ function verticalSubmarine() {
   }
 
   // spacebar controls thrust
+  // lines 233 - 243 have been modified from chatgpt https://chatgpt.com/share/67362a05-70e8-8007-91fb-18326168ba6e
   if (keyIsDown(32) && !submarineLanding) {
     velocityY = velocityY - 0.15;
   }
@@ -247,6 +312,21 @@ function verticalSubmarine() {
     } else {
       gameState = "fail";
     }
+  }
+}
+
+function draw() {
+  clear();
+
+  if (gameState === "start") {
+    startScreen();
+  } else if (gameState === "play") {
+    gameScreen();
+    verticalSubmarine();
+  } else if (gameState === "win") {
+    winScreen();
+  } else if (gameState === "fail") {
+    failScreen();
   }
 }
 
