@@ -11,14 +11,14 @@ let d = 5;
 
 // GAME VARIABLES
 let submarineLanding = false;
-let gameState = "start";
+let gameState = "start"; // possible values are "start", "play", "win", "fail".
 let velocityY = 0;
 let gravity = 0.05;
 let groundY = 920;
 
 // TITLE GRAPHICS
 let gameTitle1 = "Ocean Floor";
-let gameTitle2 = "Oddessey";
+let gameTitle2 = "Oddyssey";
 let instruction = "click anywhere to begin!";
 let instruction2 = "Use the spacebar to control the submarine's thrust,";
 let instruction3 = "but don't land too hard or you will CRASH!";
@@ -141,6 +141,12 @@ function brokenSubmarine(x, y) {
   circle(410, 285, d * 11);
 }
 
+let fishX = [160, 800, 670];
+let fishY = [270, 290, 200];
+let fishSpeed = [-1.5, -2, -2.5];
+let fishWidth = [70, 45, 80];
+let fishHeight = [15, 10, 20];
+
 function environment() {
   background(181, 229, 245);
 
@@ -181,15 +187,27 @@ function environment() {
   circle(215, 525, d + 3);
   pop();
 
-  // fish
-  noStroke();
-  fill(129, 126, 140);
-  ellipse(160, 270, 70, 15);
-  triangle(185, 270, 200, 260, 200, 280);
-  ellipse(180, 290, 45, 10);
-  triangle(195, 290, 210, 285, 210, 295);
-  ellipse(670, 200, 80, 20);
-  triangle(690, 200, 720, 190, 720, 210);
+  // fish loop
+  for (let i = 0; i < fishX.length; i++) {
+    fishX[i] = fishX[i] + fishSpeed[i];
+
+    if (fishX[i] < -100) {
+      fishX[i] = width + 50;
+    }
+
+    // body
+    noStroke();
+    fill(129, 126, 140);
+    ellipse(fishX[i], fishY[i], fishWidth[i], fishHeight[i]);
+    triangle(
+      fishX[i] - 5 + fishWidth[i] / 2,
+      fishY[i],
+      fishX[i] + fishWidth[i] / 2 + 15,
+      fishY[i] + fishHeight[i] - 3,
+      fishX[i] + fishWidth[i] / 2 + 15,
+      fishY[i] - fishHeight[i] + 3
+    );
+  }
 
   // bubbles
   fill(219, 246, 255);
@@ -293,7 +311,7 @@ function verticalSubmarine() {
   }
 
   // spacebar controls thrust
-  // lines 233 - 243 have been modified from chatgpt https://chatgpt.com/share/67362a05-70e8-8007-91fb-18326168ba6e
+  // line 297-298 and 305- 307 have been modified from chatgpt https://chatgpt.com/share/67362a05-70e8-8007-91fb-18326168ba6e
   if (keyIsDown(32) && !submarineLanding) {
     velocityY = velocityY - 0.15;
   }
