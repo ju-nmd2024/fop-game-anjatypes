@@ -2,13 +2,6 @@ function setup() {
   createCanvas(800, 600);
 }
 
-// CHARACTER VARIABLES
-let x = 350;
-let y = 290;
-let w = 100;
-let h = 50;
-let d = 5;
-
 // GAME VARIABLES
 let submarineLanding = false;
 let gameState = "start"; // possible values are "start", "play", "win", "fail".
@@ -19,10 +12,31 @@ let groundY = 920;
 // TITLE GRAPHICS
 let gameTitle1 = "Ocean Floor";
 let gameTitle2 = "Oddyssey";
-let instruction = "click anywhere to begin!";
-let instruction2 = "Use the spacebar to control the submarine's thrust,";
-let instruction3 = "but don't land too hard or you will CRASH!";
+let instruction1 = "Use the spacebar to control the submarine's thrust,";
+let instruction2 = "but don't land too hard or you will CRASH!";
 
+// BUTTON VARIABLES
+let button = "START";
+let buttonX = 340;
+let buttonY = 460;
+let buttonWidth = 150;
+let buttonHeight = 75;
+
+// CHARACTER VARIABLES
+let x = 350;
+let y = 290;
+let w = 100;
+let h = 50;
+let d = 5;
+
+// FISH VARIABLES
+let fishX = [160, 800, 670];
+let fishY = [270, 290, 200];
+let fishSpeed = [-1.5, -2, -2.5];
+let fishWidth = [70, 45, 80];
+let fishHeight = [15, 10, 20];
+
+//CHARACTERS AND ENVIRONMENT
 function submarine(x, y) {
   push();
   scale(0.8);
@@ -141,11 +155,34 @@ function brokenSubmarine(x, y) {
   circle(410, 285, d * 11);
 }
 
-let fishX = [160, 800, 670];
-let fishY = [270, 290, 200];
-let fishSpeed = [-1.5, -2, -2.5];
-let fishWidth = [70, 45, 80];
-let fishHeight = [15, 10, 20];
+function verticalSubmarine() {
+  // velocity and gravity effect
+  if (!submarineLanding) {
+    velocityY = velocityY + gravity;
+  }
+
+  // spacebar controls thrust
+  // lines 174 - 176 have been modified from chatgpt https://chatgpt.com/share/67362a05-70e8-8007-91fb-18326168ba6e
+  if (keyIsDown(32) && !submarineLanding) {
+    velocityY = velocityY - 0.15;
+  }
+
+  // submarine position
+  y = y + velocityY;
+
+  // check landing conditions for submarine
+  if (y > groundY && !submarineLanding) {
+    y = groundY;
+    submarineLanding = true;
+
+    // check for landing or crash
+    if (velocityY <= 2) {
+      gameState = "win";
+    } else {
+      gameState = "fail";
+    }
+  }
+}
 
 function environment() {
   background(181, 229, 245);
@@ -220,6 +257,7 @@ function environment() {
   circle(275, 505, 10);
 }
 
+// GAME SCREENS
 function startScreen() {
   background(114, 187, 212);
   noStroke();
@@ -243,16 +281,24 @@ function startScreen() {
   text(gameTitle1, 170, 190);
   text(gameTitle2, 210, 275);
 
-  // instructions
-  noStroke();
+  // button
+  stroke(242, 132, 104);
+  strokeWeight(5);
+  strokeJoin(ROUND);
+  fill(214, 57, 17);
+  rect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+  stroke(252, 234, 177);
   fill(24, 144, 184);
   textSize(28);
-  text(instruction, 250, 520);
+  text(button, buttonX + 30, buttonY + 45);
 
+  // instructions
+  noStroke();
   textSize(18);
   fill(24, 144, 184);
-  text(instruction2, 60, 355);
-  text(instruction3, 65, 380);
+  text(instruction1, 60, 355);
+  text(instruction2, 62, 380);
 
   // submarine
   push();
@@ -304,35 +350,7 @@ function failScreen() {
   pop();
 }
 
-function verticalSubmarine() {
-  // velocity and gravity effect
-  if (!submarineLanding) {
-    velocityY = velocityY + gravity;
-  }
-
-  // spacebar controls thrust
-  // line 297-298 and 305- 307 have been modified from chatgpt https://chatgpt.com/share/67362a05-70e8-8007-91fb-18326168ba6e
-  if (keyIsDown(32) && !submarineLanding) {
-    velocityY = velocityY - 0.15;
-  }
-
-  // submarine position
-  y = y + velocityY;
-
-  // check landing conditions for submarine
-  if (y > groundY && !submarineLanding) {
-    y = groundY;
-    submarineLanding = true;
-
-    // check for landing or crash
-    if (velocityY <= 2) {
-      gameState = "win";
-    } else {
-      gameState = "fail";
-    }
-  }
-}
-
+// GAME
 function draw() {
   clear();
 
@@ -348,18 +366,26 @@ function draw() {
   }
 }
 
-function mousePressed() {
-  if (gameState === "start") {
-    gameState = "play"; // start game
-  } else if (gameState === "win" || gameState === "fail") {
-    resetGame(); // reset game
-  }
-}
-
+// RESET GAME
 function resetGame() {
   x = 350;
   y = 290;
   velocityY = 0;
   submarineLanding = false;
   gameState = "start";
+}
+
+// MOUSE FUNCTION
+function mousePressed() {
+  if (
+    gameState === "start" &&
+    mouseX > buttonX &&
+    mouseX < buttonX + buttonWidth &&
+    mouseY > buttonY &&
+    mouseY < buttonY + buttonHeight
+  ) {
+    gameState = "play"; // start game
+  } else if (gameState === "win" || gameState === "fail") {
+    resetGame(); // reset game
+  }
 }
