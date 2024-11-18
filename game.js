@@ -13,16 +13,16 @@ let groundY = 920;
 let gameTitle1 = "Ocean Floor";
 let gameTitle2 = "Oddyssey";
 let instruction1 = "Use the spacebar to control the submarine's thrust,";
-let instruction2 = "but don't land too hard or you will CRASH!";
+let instruction2 = "and land safely on the ocean floor!";
 
-// BUTTON VARIABLES
+// START BUTTON VARIABLES
 let button = "START";
 let buttonX = 340;
 let buttonY = 460;
 let buttonWidth = 150;
 let buttonHeight = 75;
 
-// CHARACTER VARIABLES
+// SUBMARINE VARIABLES
 let x = 350;
 let y = 290;
 let w = 100;
@@ -36,7 +36,7 @@ let fishSpeed = [-1.5, -2, -2.5];
 let fishWidth = [70, 45, 80];
 let fishHeight = [15, 10, 20];
 
-//CHARACTERS AND ENVIRONMENT
+//SUBMARINE AND ENVIRONMENT
 function submarine(x, y) {
   push();
   scale(0.8);
@@ -257,7 +257,7 @@ function environment() {
   circle(275, 505, 10);
 }
 
-// GAME SCREENS
+// SCREENS
 function startScreen() {
   background(114, 187, 212);
   noStroke();
